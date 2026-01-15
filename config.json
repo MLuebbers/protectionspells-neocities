@@ -1,0 +1,17 @@
+{
+  "about": "I am a multimedia producer, programmer, and DJ in Chicago interchangeably under the names [Max Bowen](https://protectionspells.bandcamp.com/) and [Protection Spells](https://soundcloud.com/protection-spells).\nThis blog is intended as a place to hold writings about all three \nthings, side projects, tutorials for my future self, and documentation \nof my life here.",
+  "site_title": "Protection Spells",
+  "site_description": "A blog about Music, technology and craft",
+  "site_keywords": [
+    "music",
+    "technology",
+    "programming",
+    "djing",
+    "chicago",
+    "art",
+    "gamedev"
+  ],
+  "base_url": "protectionspells.neocities.org",
+  "twitter_account": "test",
+  "github_account": "test"
+}

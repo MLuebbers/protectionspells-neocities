@@ -1,23 +1,90 @@
-import Image from "next/image";
 import "./globals.css";
+import fs from "fs";
+import config from "../config.json";
+import matter from "gray-matter";
+import path from "path";
+import yaml from "js-yaml";
+import Post from "./components/Post/Post";
+import Tag from "./components/Tag/Tag";
+import Markdown from "./components/Markdown";
+
 
 export default function Home() {
+  const posts = getPosts();
+  const tags = getTags();
   return (
-    <div className="red">
-      <h2>Protection Spells</h2>
-      Maybe there is some honor in keeping this secret but I didn't come up with this name. Protection Spells comes directly from a Songs: Ohia album of the same name. I like Jason Molinas work quite a bit and found the name evocative. My idea was that the music was some sort of ritual we are all partaking in, where the performers casts a protection spell over they're audience. I did not know at the time of choosing the name that the album was entirely improvized. I feel even more strongly about the name now, but I must admit I feel silly saying it outloud.
-      <h1>About</h1>
-      <p>
-        I am a multimedia producer, programmer, and DJ in Chicago interchangeably under the names <a href="https://protectionspells.bandcamp.com/">Max Bowen</a> and <a href="https://soundcloud.com/protection-spells">Protection Spells</a>. This blog is intended as a place to hold writings about all three things, side projects, tutorials for my future self, and documentation of my life here.
+    <div>
+      <ul className="mt-4">
+        {posts.map((e) => <Post title={e.title} subtitle={e.subtitle} date={e.date} tags= {e.tags} body={e.body}/>)}
+      </ul>
+      <p className="mt-8 border-solid border-t-2 pt-2">
+        <Markdown>{config.about}</Markdown>
       </p>
-      <p>
-        Line 2
-      </p>
-      <ul>
-        <li>Bandcamp</li>
-        <li><a href="https://soundcloud.com/protection-spells">SoundCloud</a></li>
-        <li>Are.na</li>
+      <ul className="mt-8">
+        {tags.map((e) => <Tag text={e.name} />)}
       </ul>
     </div>
   );
+}
+
+
+export function getPosts(): Post[] {
+  const postsDirectory = path.join(process.cwd(), "content/posts")
+
+  const files = fs.readdirSync(postsDirectory);
+  const fileContent = files.filter((filename) => filename.endsWith(".mdx"))
+    .map((fileName) => {
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+
+      // Use gray-matter to parse the post metadata section
+      const matterResult = matter(fileContents, {
+        engines: {
+          yaml: (s) => yaml.load(s, { schema: yaml.JSON_SCHEMA }) as object,
+        },
+      });
+
+      return {
+        title: matterResult.data.title,
+        subtitle: matterResult.data.subtitle,
+        date: matterResult.data.date,
+        tags: matterResult.data.tags,
+        body: matterResult.content
+      }
+    });
+
+  return fileContent;
+}
+
+export function getTags(): Tag[] {
+  const postsDirectory = path.join(process.cwd(), "/meta")
+  const fullPath = path.join(postsDirectory, "tags.yml");
+  const fileContents = fs.readFileSync(fullPath, "utf8");
+
+  const tagData = yaml.load(fileContents, { schema: yaml.JSON_SCHEMA }) as {tags:Tag[]};
+
+  return tagData.tags;
+}
+
+export function collectTags(fileContents: Post[]): string[] {
+  const tagSet = new Set<string>();
+  fileContents.forEach((file) => {
+    file.tags.forEach((tag) => {
+      tagSet.add(tag);
+    });
+  });
+  return [...tagSet];
+}
+
+interface Tag {
+  slug: string,
+  name: string
+}
+
+interface Post {
+  title: string,
+  subtitle: string,
+  date: string,
+  tags: string[],
+  body: string
 }

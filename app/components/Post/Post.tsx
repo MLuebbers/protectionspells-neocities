@@ -1,6 +1,5 @@
 import "../../globals.css";
 import "./style.css";
-import Tag from "../Tag/Tag";
 import Markdown from "../Markdown";
 
 interface Props {
@@ -20,10 +19,7 @@ export default function Home({title, subtitle, date, tags, body}: Props) {
         <h2 className="italic">
             {subtitle} {date}
         </h2>
-        <ul className="mt-2">
-            {tags.map((tag) => <Tag text={tag} />)}
-        </ul>
-        <div>
+        <div className="mt-2">
             <Markdown>{body}</Markdown>
         </div>
     </div>

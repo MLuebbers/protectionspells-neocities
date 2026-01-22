@@ -1,3 +1,6 @@
+'use client'
+
+import Link from "next/link";
 import "./style.css";
 
 interface Props {
@@ -5,5 +8,5 @@ interface Props {
 }
 
 export default function Tag({text}: Props) {
-    return (<span className="mr-2 underline">#{text}</span>)
+  return (<Link href={`/${text}`} className="cursor-pointer mr-2 underline">#{text}</Link>)
 }

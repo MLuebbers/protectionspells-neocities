@@ -24,7 +24,9 @@ body {
   width: 60vw;
   margin-left: 5vw;
   background: #ABA5BB;
-  /* background: var(--background);
-  color: var(--foreground); */
   font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: underline;
 }
